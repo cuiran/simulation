@@ -8,7 +8,7 @@ import subprocess
 
 def makeScoreFile(chrom, varbeta_prefix, frq_file_prefix, output_prefix):
     '''
-    Make score files stores the values of beta
+    Make score files that stores the values of beta
 
     varbeta_prefix is the file prefix of variance of betas, file extension is .varbeta
     It has to contain the column 'VARBETA'
@@ -58,10 +58,10 @@ def makeProfileFile(chrom, score_file_prefix, bed_file_prefix, output_prefix):
     '''
     print('Computing profile files for chromosome {}'.format(chrom))
     chrom = str(chrom)
-    subprocess.call('plink','--noweb','--bfile',bed_file_prefix+chrom,
+    subprocess.call(['plink','--noweb','--bfile',bed_file_prefix+chrom,
         '--score',score_file_prefix+chrom+'.score','2','sum','center',
         '--allow-no-sex',
-        '--out',output_prefix+chrom)
+        '--out',output_prefix+chrom])
     return
 
 def makePhenoFile(profile_file_prefix, h2g, fam_file_prefix, output_prefix):
@@ -87,7 +87,13 @@ def makePhenoFile(profile_file_prefix, h2g, fam_file_prefix, output_prefix):
     phe_df.to_csv(output_prefix+'.phe',index=False,sep='\t')
     return
 
-def makeSumstatFile(chrom, 
+def makeSumstatFile(chrom, bed_file_prefix, pheno_file, output_prefix):
+    subprocess.call(['plink','--bfile',bed_file_prefix+chrom,
+        '--pheno',pheno_file,
+        '--assoc',
+        '--allow-no-sex',
+        '--out',output_prefix+'.'+chrom])
+    return 
 
 
 
