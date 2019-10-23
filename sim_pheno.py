@@ -88,6 +88,14 @@ def makePhenoFile(profile_file_prefix, h2g, fam_file_prefix, output_prefix):
     return
 
 def makeSumstatFile(chrom, bed_file_prefix, pheno_file, output_prefix):
+    '''
+    Compute summary statistics for one chromosome
+
+    Output .qassoc files has columns [CHR,SNP,NMISS,BETA,SE,R2,T,P]
+    where NMISS: Number of non-missing individuals for this analysis
+    T: t-statistic for regression of phenotype on allele count
+    P: Asymptotic significance value for coefficient
+    '''
     subprocess.call(['plink','--bfile',bed_file_prefix+chrom,
         '--pheno',pheno_file,
         '--assoc',
@@ -95,6 +103,12 @@ def makeSumstatFile(chrom, bed_file_prefix, pheno_file, output_prefix):
         '--out',output_prefix+'.'+chrom])
     return 
 
+def formatSumstat(bed_file_prefix, ss_file, output_prefix):
+    '''
+    Format qassoc files to sLDSC format
+
+    Output .sumstats file has columns ['CHR','N','Z','A1','A2']
+    '''
 
 
 
