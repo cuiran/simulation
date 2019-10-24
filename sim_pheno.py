@@ -103,14 +103,26 @@ def makeSumstatFile(chrom, bed_file_prefix, pheno_file, output_prefix):
         '--out',output_prefix+'.'+chrom])
     return 
 
-def formatSumstat(bed_file_prefix, ss_file, output_prefix):
+def formatSumstat(bed_file_prefix, qassoc_file, output_prefix, path_to_ldsc):
     '''
     Format qassoc files to sLDSC format
 
     Output .sumstats file has columns ['CHR','N','Z','A1','A2']
     '''
-
-
+    # concatenate chromosome separated qassoc files
+    qassoc_dfs = [pd.read_csv(qassoc_file+str(i)+'.qassoc',delim_whitespace=True) for i in range(1,23)]
+    qassoc_df = pd.concat(qassoc_dfs,axis=0)
+    bim_dfs = [pd.read_csv(bed_file_prefix+str(i)+'.bim',delim_whitespace=True,header=None,usecols=[1,4,5]) for i in range(1,23)]
+    bim_df = pd.concat(bim_dfs,axis=0)
+    bim_df.columns = ['SNP','A1','A2']
+    # use munge_sumstats to format summary statistics
+    subprocess.call(['python', path_to_ldsc+'munge_sumstats.py',
+    '--sumstats',ss_file,
+    '--N','NMISS',
+    '--out',output_prefix,
+    '--p','P',
+    '--a1','A1',
+    
 
 
 
